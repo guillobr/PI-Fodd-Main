@@ -1,0 +1,35 @@
+.search {
+    display: flex;
+    justify-content: center;
+    padding: 5px 5px 5px;
+    width: 1200px;
+}
+
+.searchInput {
+    margin-top: 20px;    
+    margin-bottom: 20px;
+    padding-top: 20px;
+}
+
+.searchButton {
+    color: rgba(17, 18, 18, 0.985);
+    background-color: #aaa1933c;
+    font-size: 17px;
+    text-align: center;
+    padding: 10px 25px;
+    margin: 15px;
+    border-radius: 3px;
+    box-shadow: 3px 3px 5px 1px rgb(146, 159, 163);
+    cursor: pointer;
+    align-items: center;
+    
+    
+}
+
+.searchButton:hover {
+    color:rgb(43, 18, 3);
+    background-color: rgba(207, 181, 121, 0.495);
+}
+
+
+
