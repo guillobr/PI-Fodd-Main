@@ -13,9 +13,9 @@ export function getRecipes(){
 export function searchRecipesByName(name){
     return async function(dispatch){
         try {                                                //pokemos?name=${name}
-            var json = await axios.get('http://localhost:3001/recipes?name='+name);
-            console.log('soyByname:',json.data)
-            return dispatch({
+            var json = await axios.get('http://localhost:3001/recipes?name='+name);//[{pikachu}]
+            //console.log('soyByname:',json.data)
+            return dispatch({//--->[{recetas}]
                 type: 'SEARCH_RECIPES_BY_NAME',
                 payload: json.data
             })
@@ -36,13 +36,23 @@ export function getDiets() {
     }
 }
 
-export function postRecipe (payload){
-    return async function (){
-        const json = await axios.post('http://localhost:3001/recipe',payload);
-        //console.log(json)
-        return json
+export function postRecipe (payload){//{pokemon} <-- form-->body
+    return async function (dispatch){//redux magia
+       const json = await axios.post('http://localhost:3001/recipe',payload);//json.data
+        //console.log('soy json:',json)
+        return dispatch({
+            type:'POST',
+            payload: json.data
+        })
     }
 }
+
+// export function postRecipe (payload){//---> payload({receta})---> cree en BD
+//     return async function (){
+//         const json = await axios.post('http://localhost:3001/recipe',payload);      
+//       return json
+//     }
+// }
 
 export function filterRecipesByDiets(payload){
     //console.log(payload)
@@ -58,6 +68,14 @@ export function orderByHealthScore(payload){
         payload: payload
     }
 }
+
+export function filterBySource(payload){
+    return{
+        type: 'FILTER_BY_SOURCE',
+        payload: payload
+    }
+}
+
 
 export function orderByName(payload) {
     return { 
@@ -80,13 +98,29 @@ export function getDetail(id){
     }
 }
 
-export function putRecipe (payload,id){
-    return async function (){
-        const json = await axios.put('http://localhost:3001/recipe/'+id,payload);
-        //console.log(json)
-        return json
+export  function Remove(id){
+    return async function(dispatch){
+       var json = await axios.delete(`http://localhost:3001/recipe/delete/${id}`)
+       //console.log('soy delete:',json.id)
+       return dispatch({
+           type:'DELETE',
+           payload: json.id
+       })
     }
 }
+
+
+export function cleanRecipe(){
+    return{
+        type:'CLEAN_DETAIL',
+        payload: {}
+    }
+}
+
+
+
+
+
 
 
 

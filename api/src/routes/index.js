@@ -44,10 +44,11 @@ const getApiInfo = async () =>{
     const apiInfo = apiUrl.data.results.map(el => {
         return {
             id: el.id,
-            name : el.title || 's',
+            name : el.title,
             summary: el.summary,
             image: el.image,
             healthScore : el.healthScore,
+            createInDb: false,
             diets : el.diets.map(dieta=>{return{name:dieta}}),
             steps:el.analyzedInstructions[0]?.steps.map(step => {
                 return{
@@ -61,7 +62,7 @@ const getApiInfo = async () =>{
 
 
 const getDbInfo = async () =>{
-    return await Recipe.findAll({
+    return await Recipe.findAll({//BD----> receta
         include:{
         model: Diet,
         attributes: ['name'],
@@ -88,12 +89,12 @@ router.get('/recipes', async (req,res) =>{
     //console.log(recipesTotal.map(recipe=>recipe.toJSON()))
     if(name){
         let recipeName = await recipesTotal.filter(recipe=>recipe.name.toLowerCase().includes(name.toLowerCase()))
-        console.log('recipeName:',recipeName)
+       // console.log('recipeName:',recipeName)
         //recipeName.length 
          res.status(200).send(recipeName)//---->[{receta}] || []
        // : res.status(404).send('Recipe not found')//--->Recipe not found'
     }else{
-        res.status(200).send(recipesTotal)
+        res.status(200).send(recipesTotal)//[{recetas}]
     }
 });
 
@@ -115,20 +116,31 @@ router.get('/types', async (req,res)=>{
 
 router.post('/recipe', async (req,res)=>{
     const { name , summary , healthScore ,  steps, image, diets, createInDb} = req.body;
-   try{  const recetaCreada = await Recipe.create({
+   try{  const recetaCreada = await Recipe.create({//---> receta en BD
         name,
-        summary,                 
+        summary,                 //recetaCreada={receta}
         healthScore,
         steps,
         image,
-        createInDb
+        createInDb,
         });
-        let dietDb = await Diet.findAll({
+        let dietDb = await Diet.findAll({//dietas--> BD -->[vgan, paleo]
             where: {name : diets}
         })
 
-        recetaCreada.addDiet(dietDb)
-        res.send(recetaCreada)
+      await recetaCreada.addDiet(dietDb)//-->
+      const recetaUno= await Recipe.findAll({
+          where: {name:name},
+          include:{
+            model: Diet,
+            attributes: ['name'],
+            through: {
+                attributes : [],
+            }
+        }
+      })
+      //console.log('Re:',recetaUno)
+        res.send(recetaUno)
 
    }catch(error){
        res.status(404).send({msg:error})
@@ -146,6 +158,20 @@ router.get('/recipes/:id', async (req,res)=>{
         res.status(404).send('not found')
     }
 });
+
+router.delete("/recipe/delete/:id",async(req,res)=>{
+    const id=req.params.id
+    try{
+        let rec=await Recipe.destroy({
+            where:{
+                id:id
+            }
+        })
+        return res.json({delete:true})
+    }catch(error){
+        console.log(error)
+    }
+})
 
 
 

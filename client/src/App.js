@@ -1,5 +1,8 @@
 import './App.css';
 import React from 'react';
+import { getRecipes } from './actions';
+import { useState , useEffect } from 'react';
+import { useDispatch  } from 'react-redux';
 import {BrowserRouter , Routes , Route} from 'react-router-dom';
 import LandingPage from './components/LandingPage'
 import  Home  from './components/Home'
@@ -8,6 +11,13 @@ import Detail from './components/Detail';
 
 
 function App() {
+
+const dispatch=useDispatch()
+
+  useEffect(()=> {
+    dispatch(getRecipes())
+},[dispatch])//
+
   return (
     <BrowserRouter>
     <Routes>

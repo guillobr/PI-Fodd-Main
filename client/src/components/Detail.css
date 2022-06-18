@@ -14,6 +14,18 @@
     color:#c1b8b7;
     background-color: rgb(240, 232, 221);
 }
+.deleteButton{
+    color: rgb(11, 1, 1);
+    background-color: #2f2f2e09;
+    font-size: 17px;
+    text-align: center;
+    padding: 10px 25px;
+    margin: 5px;
+    border-radius: 3px;
+    box-shadow: 3px 3px 5px 1px rgb(24, 24, 24);
+    cursor: pointer;
+
+}
 
 .details {
     background-image: url(https://p4.wallpaperbetter.com/wallpaper/154/660/987/board-bread-breakfast-bunch-wallpaper-preview.jpg);

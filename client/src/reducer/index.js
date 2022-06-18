@@ -3,8 +3,8 @@ const initialState = {
     recipes : [],
     allRecipesCopy: [],
     diets:[],
-    detail:[],
-    
+    detail:[],  
+    delete:[]
 }
 
 
@@ -37,38 +37,36 @@ function rootReducer (state = initialState , action){
             }
 
         case 'FILTER_BY_DIETS':
-            const recipes = state.allRecipesCopy//-->[100]
-            const recipesFilterByDiets = //-->[20]
+            const recipes = state.allRecipesCopy
+            const recipesFilterByDiets =
                 recipes.filter(recipe => {
-                    let names = recipe.diets.map(diet => diet.name)//-->[ove,vegano,paleo]
-                    if (names.includes(action.payload)) //carnivoro
+                    let names = recipe.diets.map(diet => diet.name)
+                    if (names.includes(action.payload)) 
                     return recipe
                 })
             return {
                 ...state,
-                recipes: recipesFilterByDiets//-->[20]
+                recipes: recipesFilterByDiets
             }
 
         case 'ORDER_BY_HEALTH_SCORE':
             const recipesByScore = action.payload === 'asc' ?
-                 state.recipes.sort((a, b) => {//7,3,5-->3,7,5--> 3,5,7
-                    if (a.healthScore > b.healthScore) return 1;//a=2 b=1--> b,a-->1,2
-                    if (b.healthScore > a.healthScore) return -1;//b=2 a=1--> a,b-->1,2
+                 state.recipes.sort((a, b) => {
+                    if (a.healthScore > b.healthScore) return 1;
+                    if (b.healthScore > a.healthScore) return -1;
                     return 0;
                  }) 
-                //state.recipes.sort((a,b)=>{return a-b})
-                // :state.recipes.sort((a,b)=>{return a+b})
-                :state.recipes.sort((a, b) => { //4,2,5--> 4,5,2--> 5,4,2
-                    if (a.healthScore > b.healthScore) return -1;//a=2 b=1--> a,b-->2,1
-                    if (b.healthScore > a.healthScore) return 1;//b=2 a=1--> b,a-->2,1
+                :state.recipes.sort((a, b) => { 
+                    if (a.healthScore > b.healthScore) return -1;
+                    if (b.healthScore > a.healthScore) return 1;
                     return 0;
                 });
                 return {
                     ...state,
                     recipes: recipesByScore
             }
-            //SORT --> -1 --> a,b
-          //      -->  1---->b,a
+
+          
 
         case 'ORDER_BY_NAME':
             let recipesByOrderName = action.payload === 'ascendent' ?
@@ -87,11 +85,40 @@ function rootReducer (state = initialState , action){
                 recipes: recipesByOrderName
             };
 
+        case 'FILTER_BY_SOURCE':
+            const recipesCreate = state.allRecipesCopy
+            const recipesC= action.payload === 'true'
+            ? recipesCreate.filter(r=>r.createInDb===true)
+            : recipesCreate.filter(r=>r.createInDb===false)
+            return{
+                ...state,
+                recipes: recipesC
+            }
+
 
         case 'GET_DETAILS':
             return({
                 ...state,
                 detail:action.payload
+            })
+
+        case 'POST':
+            return({
+                ...state,
+                recipes:[...state.recipes,action.payload],
+                allRecipesCopy:[...state.allRecipesCopy,action.payload]                        
+            })
+
+        case 'DELETE':
+            return{
+                ...state,
+                delete:action.payload,
+            } 
+
+        case 'CLEAN_DETAIL':
+            return({
+                ...state,
+                detail:{}
             })
 
             default:

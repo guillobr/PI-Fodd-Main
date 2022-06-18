@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState , useEffect } from 'react';
 import { useDispatch , useSelector } from 'react-redux';
-import { getRecipes, getDiets, filterRecipesByDiets, orderByHealthScore , orderByName } from '../actions';
+import { getRecipes, getDiets, filterRecipesByDiets, orderByHealthScore , orderByName , filterBySource } from '../actions';
 import { Link }  from 'react-router-dom';
 import  Card  from './Card';
 import Paginado from './Paginado';
@@ -17,9 +17,9 @@ const diets = useSelector(state => state.diets);
 const [order,setOrder] = useState(true)
 
 
-useEffect(()=> {
-    dispatch(getRecipes())
-},[dispatch]) 
+// useEffect(()=> {
+//     dispatch(getRecipes())
+// },[dispatch]) //array depencias
 
 
 useEffect(() => {
@@ -37,7 +37,7 @@ const paginado = (pagNumber) => {
     setCurrentPage(pagNumber)
 }
 
-console.log('soyCurrent:',currentRecipes)
+//console.log('soyCurrent:',currentRecipes)
 function handleClick(e){
     e.preventDefault();  
     dispatch(getRecipes());
@@ -57,6 +57,12 @@ function handleOrderByHealthScore(e) {
 
 function handleOrderByName(e) {
     dispatch(orderByName(e.target.value))
+    setCurrentPage(1)
+  setOrder(`Ordenado ${e.target.value}`)
+};
+
+function handleFilterBySource(e) {
+    dispatch(filterBySource(e.target.value))
     setCurrentPage(1)
   setOrder(`Ordenado ${e.target.value}`)
 };
@@ -93,8 +99,12 @@ return (
                     <option value="asc">Lower</option>
                 </select>
 
-                
-            
+                <select className="select" onChange={e => handleFilterBySource(e)} defaultValue='default'>
+                    <option value="default" disabled >Filter By Source</option>
+                    <option value="true">Own</option>
+                    <option value="false">Api</option>
+                </select>
+         
                 <select className="select" onChange={e => handleFilterByDiets(e)} defaultValue='default'>
                     <option value='default' disabled>Select by Diet</option>
                         {
@@ -107,7 +117,7 @@ return (
 
                 <Paginado 
                 recipesPerPage={recipesPerPage}
-                allRecipes={allRecipes?.length}
+                pepe={allRecipes?.length}
                 paginado={paginado}/>
 
            
@@ -123,9 +133,10 @@ return (
                 currentRecipes.length  //[]
                 ? currentRecipes.map(recipe=>{
                     return(
-                        <Link to={"/recipe/"+recipe.id}>
-                            <Card className="eachRecipe" name={recipe.name} image={recipe.image} diets={recipe.diets} createInDb={recipe.createInDb} key={recipe.id}/>
-                        </Link>
+                        // <Link to={"/recipe/"+recipe.id}>
+                            <Card className="eachRecipe" name={recipe.name} image={recipe.image} diets={recipe.diets} id={recipe.id} createInDb={recipe.createInDb} key={recipe.id}/>
+                        // </Link>
+                      
                     )               
                     })
                 : <h5>Recipe Not Found!</h5>

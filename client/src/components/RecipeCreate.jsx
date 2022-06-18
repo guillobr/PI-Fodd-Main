@@ -4,36 +4,13 @@ import { postRecipe , getDiets } from '../actions/index';
 import { useDispatch , useSelector } from 'react-redux';
 import './RecipeCreate.css';
 
-function validate(post) {
-    let errors = {};//{........}
-    if (!post.name) {
-        errors.name = 'Please insert a name' 
-    } else if(!post.name[0].match(/^[A-Z]/)){
-        errors.name='First letter must be a capital letter'
-    }
-    if (!post.summary) {
-        errors.summary = 'Please write a summary'
-    }
-   
-    if (!post.healthScore || post.healthScore < 0 || post.healthScore > 100) {
-        errors.healthScore = 'Value must be between 0 and 100'
-    }
-    if (!post.steps.length) {
-        errors.steps = 'Please write some instructions or steps'
-    }
-    // if (!post.image) {
-    //     errors.image = 'Insert url image'
-    // }
-    if (!post.diets.length) {
-        errors.diets = 'Choose unleast one diet'
-    }
-    return errors;
-}
+
 
 
 export default function RecipeCreate(){
     
     const dispatch = useDispatch()  
+    const todasrecetas = useSelector((state)=>state.recipes)
     const alldiets = useSelector((state)=> state.diets)
     const [errors,setErrors] = useState({});
     const [post,setPost] = useState({ 
@@ -97,6 +74,38 @@ export default function RecipeCreate(){
             diets: [...post.diets]
         }));
     }
+
+    function validate(post) {
+        let errors = {};//{........}
+        if (!post.name) {
+            errors.name = 'Please insert a name' 
+        } else if(!post.name[0].match(/^[A-Z]/)){
+            errors.name='First letter must be a capital letter'}
+        // } else if(post.name && todasrecetas.indexOf(receta=> receta.name === post.name)){
+        //     errors.name = 'Nombre repetido'
+        // }
+        if (!post.summary) {
+            errors.summary = 'Please write a summary'
+        }
+       
+        if (!post.healthScore || post.healthScore < 0 || post.healthScore > 100) {
+            errors.healthScore = 'Value must be between 0 and 100'
+        }
+        if (!post.steps.length) {
+            errors.steps = 'Please write some instructions or steps'
+        }
+        // if (!post.image) {
+        //     errors.image = 'Insert url image'
+        // }
+        if (!post.diets.length) {
+            errors.diets = 'Choose unleast one diet'
+        }
+        return errors;
+    }
+
+
+
+
 
     function handleSubmit(e) {
         e.preventDefault();

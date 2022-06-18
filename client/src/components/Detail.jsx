@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch , useSelector } from 'react-redux';
-import { getDetail} from '../actions/index';
 import { useEffect } from 'react';
 import { useParams } from "react-router";
+import { getDetail, Remove , cleanRecipe } from '../actions/index';
+import { useNavigate} from 'react-router-dom';
 import './Detail.css';
+
 
 
 export default function Detail(props){
@@ -32,7 +34,25 @@ const myRecipe= useSelector((state)=> state.detail)
 // }
 // var a = steps()
 
+let navigate = useNavigate();
 
+function handleDelete (e){
+    e.preventDefault(e)
+    if(myRecipe[0].createInDb===true){
+    dispatch(Remove(id))
+    alert("Successfully Deleted")
+    navigate("../home")}else{
+        alert("Sorry, this recipe cant be deleted")
+    }
+    // navigate("/home")
+       // return dispatch(cleanData(id))
+    }
+
+    function handleClick(e) {
+        e.preventDefault();
+        dispatch(cleanRecipe());
+        navigate("/home");
+      }
 
 
 return(
@@ -70,7 +90,7 @@ return(
                     } */}
                     {myRecipe[0].createInDb ? <h5>{myRecipe[0].steps}</h5>:(
                     myRecipe[0].steps ? myRecipe[0].steps.map(step => <p>{step.step}</p>)
-                        : <h5>Sory, there are no Steps for this Recipe</h5>)}
+                        : <h5>Sorry!!There are no Steps for this Recipe</h5>)}
                          {/* {myRecipe[0].createInDb ? <h5>{myRecipe[0].steps}</h5>:
                      myRecipe.steps.map(step => <li>{step.number}:{step.step}</li>)} */}
                         
@@ -89,9 +109,11 @@ return(
             </div> 
             : <p>Loading..</p>
         }
-        <Link to = '/home'>
+        <button className="deleteButton" onClick={(e)=> handleDelete(e)}>Remove</button>
+        <button className="backButton" onClick={(e) => handleClick(e)}>Back Home</button>
+        {/* <Link to = '/home'>
             <button button className="backButton">Go Back</button>
-        </Link>
+        </Link> */}
       
       
       
